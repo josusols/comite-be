@@ -1,39 +1,21 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - master
 
-resources:
-- repo: self
+steps:
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'Pago por uso(f9830efe-2989-4860-b37d-3e8c516a12c0)'
+    azureContainerRegistry: '{"loginServer":"comitedockerimages.azurecr.io", "id" : "/subscriptions/f9830efe-2989-4860-b37d-3e8c516a12c0/resourceGroups/Demo.Docker/providers/Microsoft.ContainerRegistry/registries/ComiteDockerImages"}'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Build services'
 
-variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '58340226-2bc9-4260-b036-2763bb0f8c59'
-  imageRepository: 'comitebe'
-  containerRegistry: 'comitedockerimages.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-  
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-
-stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+- task: DockerCompose@0
+  inputs:
+    containerregistrytype: 'Azure Container Registry'
+    azureSubscription: 'Pago por uso(f9830efe-2989-4860-b37d-3e8c516a12c0)'
+    azureContainerRegistry: '{"loginServer":"comitedockerimages.azurecr.io", "id" : "/subscriptions/f9830efe-2989-4860-b37d-3e8c516a12c0/resourceGroups/Demo.Docker/providers/Microsoft.ContainerRegistry/registries/ComiteDockerImages"}'
+    dockerComposeFile: '**/docker-compose.yml'
+    action: 'Push services'
+    includeSourceTags: true
+    includeLatestTag: true
