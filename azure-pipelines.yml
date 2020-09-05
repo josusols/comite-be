@@ -2,13 +2,6 @@ trigger:
 - master
 
 steps:
-- task: DockerCompose@0
-  inputs:
-    containerregistrytype: 'Azure Container Registry'
-    azureSubscription: 'Pago por uso(f9830efe-2989-4860-b37d-3e8c516a12c0)'
-    azureContainerRegistry: '{"loginServer":"comitedockerimages.azurecr.io", "id" : "/subscriptions/f9830efe-2989-4860-b37d-3e8c516a12c0/resourceGroups/Demo.Docker/providers/Microsoft.ContainerRegistry/registries/ComiteDockerImages"}'
-    dockerComposeFile: '**/docker-compose.yml'
-    action: 'Build services'
 
 - task: DockerCompose@0
   inputs:
