@@ -1,12 +1,17 @@
 import 'dotenv/config';
-import { sequelize } from '../models';
+import models, { sequelize } from '../models';
 import app from '../app';
 import { logger } from '../shared/Logger';
 import http from 'http';
 import https from 'https';
 
-sequelize.sync().then(async () => {
+//force usado para hacer un truncate de toda la base de datos
+sequelize.sync({ force: true }).then(async () => {
   try {
+
+    //Crear usuario Admin example
+    createSampleData();
+
     if(process.env.HTTPS_SERVER === 'true'){
       var options = {
         key: fs.readFileSync(path.resolve('../key.pem')),
@@ -30,3 +35,32 @@ sequelize.sync().then(async () => {
     logger.error(error);
 }
 });
+
+const createSampleData = async () => {
+  await models.User.create(
+    {
+      username: 'a@b.com',
+      password: '$2b$10$zSjKPHI5n4Pe/d408to.C.9if4w81ui.AziBfzR/opYHbjSKiaB.i', //admin
+      nombre:'Admin example',
+      apellido:'Admin example',
+    },
+  );
+
+  await models.Vehiculo.create(
+    {
+        placa: '222URL',
+        modelo: '2020',
+        linea: 'Supra',
+        tipo:  'Sedan',
+        chasis: '213213GXTJ2',
+        marca: 'Toyota',
+        tamaño_motor: '2500',
+        cant_cilindros: '4',
+        toneladas: '1',
+        transmision: 'Mecanica',
+        asientos: '4',
+        color: 'Negro'
+    }
+);
+  console.log("Creation of sample data done");
+};
