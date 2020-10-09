@@ -12,7 +12,7 @@ services:
       - POSTGRES_PASSWORD=url_root
       - POSTGRES_USER=postgres
   node:
-    build: .
+    image: http://comitedockerimages.azurecr.io/josusolscomitebe_node
     ports:
       - "3000:3000"    
     links:
