@@ -111,6 +111,11 @@ router.post('/login', async (req, res) => {
  *                      Post SignUp - "POST /register"
  ******************************************************************************/
 router.post('/register', async (req, res) => {
+
+
+  try {
+    
+  
   const {username,password,nombre,apellido,edad,dpi,rol} = req.body;
   const buscarUsuario = await req.context.models.User.findOne({
     attributes:['username'],
@@ -183,8 +188,67 @@ router.post('/register', async (req, res) => {
       
     });
   }
+  } catch (error) {
+      
+    }
 });
 
+/******************************************************************************
+ *                      PUT Edit User - "PUT /register"
+ ******************************************************************************/
+router.put('/register', async (req, res) => {
+
+
+  try {
+    
+  
+  const {username,password,nombre,apellido,edad,dpi,rol} = req.body;
+
+
+    if (password !== '') {
+      
+    
+    const saltRounds = 10;
+
+    bcrypt.hash(password, saltRounds,async (err, hash) => {
+      await req.context.models.User.update(
+        {
+          username,
+          password: hash,
+          nombre,
+          apellido,
+          rol,
+          edad,
+          dpi,
+        },{
+            returning: true, where: { username } 
+           }
+      );
+      return res.status(OK).json('Usuario editado con exito');
+    });
+  }else{
+    await req.context.models.User.update(
+      {
+        username,
+        password: hash,
+        nombre,
+        apellido,
+        rol,
+        edad,
+        dpi,
+      },{
+          returning: true, where: { username } 
+         }
+    );
+
+    return res.status(OK).json('Usuario editado con exito');
+
+  }
+  
+  } catch (error) {
+    return res.status(BAD_REQUEST).json('Error al editar usuario');
+    }
+});
 
 /******************************************************************************
  *                      Post ResetPassword - "POST /resetpassword"
